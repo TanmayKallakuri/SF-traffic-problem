@@ -1,0 +1,86 @@
+# SF Smart Mobility Assistant Configuration
+# Copy this file to config.yaml and fill in your values
+
+# API Keys
+api_keys:
+  transit_511: "YOUR_511_API_KEY_HERE"
+  datasf: "YOUR_DATASF_API_KEY_HERE"  # Optional, most DataSF endpoints are open
+  weather_api: "YOUR_WEATHER_API_KEY_HERE"  # Optional for weather features
+
+# Database Configuration
+database:
+  type: "postgresql"  # or "sqlite" for development
+  host: "localhost"
+  port: 5432
+  name: "sf_mobility"
+  user: "your_username"
+  password: "your_password"
+  # For SQLite development:
+  # sqlite_path: "data/sf_mobility.db"
+
+# API Endpoints
+endpoints:
+  transit_511_base: "https://api.511.org/transit"
+  datasf_base: "https://data.sfgov.org/resource"
+  parking_meters: "https://data.sfgov.org/resource/imvp-dq3v.json"
+  parking_sensors: "https://data.sfgov.org/resource/8vzz-qzz6.json"
+
+# Model Configuration
+models:
+  transit:
+    prediction_horizon_minutes: 15
+    retrain_frequency_hours: 24
+    min_training_samples: 1000
+    features:
+      - hour_of_day
+      - day_of_week
+      - historical_delay
+      - weather
+      - is_holiday
+  
+  parking:
+    prediction_horizon_minutes: 30
+    target_occupancy_rate: 0.85
+    retrain_frequency_hours: 24
+    min_training_samples: 500
+    features:
+      - hour_of_day
+      - day_of_week
+      - historical_occupancy
+      - nearby_events
+      - is_holiday
+
+# Application Settings
+app:
+  host: "0.0.0.0"
+  port: 8000
+  debug: true
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8000"
+  
+# Data Collection
+data_collection:
+  transit_update_interval_seconds: 60
+  parking_update_interval_seconds: 300
+  max_historical_days: 90
+
+# Logging
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/app.log"
+
+# Feature Engineering
+features:
+  use_weather: true
+  use_events: true
+  use_holidays: true
+  lag_features_hours: [1, 3, 24, 168]  # 1h, 3h, 1day, 1week
+
+# Ethical & Safety Controls
+ethics:
+  max_price_increase_percent: 50
+  neighborhood_equity_check: true
+  bias_monitoring_enabled: true
+  anonymization_level: "block"  # "block", "neighborhood", or "city"
