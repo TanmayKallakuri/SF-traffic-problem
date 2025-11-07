@@ -1,0 +1,21 @@
+# WhatsApp Bot Dependencies
+# Add these to requirements.txt
+
+# Web Framework
+flask==3.0.0
+gunicorn==21.2.0
+
+# WhatsApp/Messaging
+twilio==8.10.0
+
+# Google Maps
+googlemaps==4.10.0
+
+# Natural Language Processing
+nltk==3.8.1
+
+# Additional utilities
+phonenumbers==8.13.25
+python-dotenv==1.0.0
+redis==5.0.1
+celery==5.3.4
