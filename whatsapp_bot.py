@@ -41,15 +41,23 @@ GOOGLE_MAPS_API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
 twilio_client = None
 gmaps = None
 
-if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
-    twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-    logger.info("✓ Twilio client initialized")
+if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN and not TWILIO_ACCOUNT_SID.startswith('demo'):
+    try:
+        twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+        logger.info("✓ Twilio client initialized")
+    except Exception as e:
+        logger.warning(f"⚠ Twilio error: {e} - running in demo mode")
+        twilio_client = None
 else:
     logger.warning("⚠ Twilio credentials not found - running in demo mode")
 
-if GOOGLE_MAPS_API_KEY:
-    gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
-    logger.info("✓ Google Maps client initialized")
+if GOOGLE_MAPS_API_KEY and not GOOGLE_MAPS_API_KEY.startswith('demo'):
+    try:
+        gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)
+        logger.info("✓ Google Maps client initialized")
+    except Exception as e:
+        logger.warning(f"⚠ Google Maps API error: {e} - will use fallback")
+        gmaps = None
 else:
     logger.warning("⚠ Google Maps API key not found - will use fallback")
 
